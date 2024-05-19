@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<script>
+    function postData(url = '', data = {}) {
+
+
+fetch(url, {
+  method: "POST",
+  headers: {'Content-Type': 'application/json'}, 
+  body: JSON.stringify(data)
+}).then(response=>response.json())
+.then(bo=>{ 
+ alert(bo["age"]);
+})
+
+
+}
+</script>
+<script>
+    function send(){
+      let inp =  document.getElementById("input");
+      postData('/post', {input: inp.value });
+  }
+</script>
+
+<body>
+    <input type="text" id="input">
+    <button onclick="send();">Send Data</button>
+    <div id="output"></div>
+</body>
+
+</html>
