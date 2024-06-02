@@ -5,7 +5,7 @@
   body: JSON.stringify(data)
 }).then(response=>response.json())
 .then(bo=>{ 
- alert(bo["age"]);
+ alert(bo["msg"]);
 })
 
 
@@ -24,6 +24,27 @@
     let phone =  document.getElementById("Editbox3").value; 
      postData('/register', {email: email,pwd:pwd,phone:phone });
     $('#Validate_phone_number').modal('show');
+  }
+
+  function activate(){
+    $('#Validate_phone_number').modal('hide');
 
 
+    let email =  document.getElementById("Editbox2").value;
+    let pwd =  document.getElementById("Editbox1").value; 
+    let phone =  document.getElementById("Editbox3").value;
+    let smsdigits =  document.getElementById("Editbox5").value; 
+
+     postData('/activate', {email: email,pwd:pwd,phone:phone, smsdigits:smsdigits});
+    $('#Validate_phone_number').modal('show');
+  }
+
+    function AddService(){
+    $('#Register').modal('hide');
+
+    let email =  document.getElementById("Editbox2").value;
+    let pwd =  document.getElementById("Editbox1").value; 
+    let phone =  document.getElementById("Editbox3").value; 
+     postData('/sms-service', {email: email,pwd:pwd,phone:phone });
+    $('#Validate_phone_number').modal('show');
   }

@@ -32,19 +32,32 @@ def route_home():
 
 
 @app.route("/register", methods=['POST'])
-def route_hadle_post():
-    print("post endpoint reached")
+def route_handle_register():
     if request.method == 'POST':
-        print(f"------json data------{request.get_data()}")
         data = request.get_json()
-        print(data)
-        #print(data["input"])
-        print("------end------")
-        storeHelper.addNewUser(data)
-    di = {"age": 35}
-    m = json.dumps(di)
-    print(f"sending m =## {m} ##")
-    return jsonify(di)
+        di = {"msg": storeHelper.addNewUser(data)}
+        return jsonify(di)
+
+@app.route("/sms-service", methods=['POST'])
+def route_handle_service():
+    if request.method == 'POST':
+        data = request.get_json()
+        di = {"msg": storeHelper.addNewSmsService(data)}
+        return jsonify(di)
+
+@app.route("/add-sms", methods=['POST'])
+def route_handle_addsms():
+    if request.method == 'POST':
+        data = request.get_json()
+        di = {"msg": storeHelper.addSMS(data)}
+        return jsonify(di)
+
+@app.route("/activate", methods=['POST'])
+def route_handle_activate():
+    if request.method == 'POST':
+        data = request.get_json()
+        di = {"msg": storeHelper.activate(data)}
+        return jsonify(di)
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0",port=5000,debug=False)
