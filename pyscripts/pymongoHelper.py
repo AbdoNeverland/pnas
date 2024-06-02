@@ -56,7 +56,7 @@ class mongoHelper:
       res = self.put({"email":data["email"],
         "pwd":data["pwd"],
         "phone":data["phone"],
-        "msg":getRandomDigits(6),
+        "msg":data["phone"],
         "sendTo":data["sendTo"],
         "datetime":dt.strftime("%m/%d/%Y,%H:%M:%S"),
         "timestamp":dt.timestamp(),
@@ -81,6 +81,7 @@ class mongoHelper:
         "datetime":dt.strftime("%m/%d/%Y,%H:%M:%S"),
         "timestamp":dt.timestamp()
         })
+      addSMS();
       msg ="the new user has been added"
     else:
       msg = "the user already exists"
