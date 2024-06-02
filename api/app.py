@@ -1,47 +1,27 @@
 #!/usr/bin/python3
 """doc """
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, url_for
 import json
 from pymongo import MongoClient
+import os
+import pyscripts
+print(os.getcwd())
+from pyscripts.pymongoHelper import mongoHelper
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='export')
+app.static_folder = 'static'
+jinja_options = app.jinja_options.copy()
+jinja_options.update(dict(
+    comment_start_string='<#',
+    comment_end_string='#>',
+))
+app.jinja_options = jinja_options
 
-
-class mongoHelper:
-  def __init__(self):
-    self.mongoClient = MongoClient("mongodb://127.0.0.1:27017/")
-    self.db = None
-    self.createDatabase()
-    self.createCollection()
-
-  def createDatabase(self, dbNmae="maindb"):
-    alldb = self.mongoClient.list_database_names()
-    if dbNmae not in alldb:
-      self.db = self.mongoClient[dbNmae]
-    else:
-      self.db = self.mongoClient[dbNmae]
-
-  def get(self, what, _filter, colName="Users"):
-    return self.db[colName].find_one(what, _filter)
-
-  def createCollection(self, colName="Users"):
-    col = self.db[colName]
-
-  def put(self, data, colName="Users"):
-    res = self.db[colName].insert_one(data)
-
-  def addNewUser(self, data):
-    p_user = data["user"]
-    p_pwd = data["pwd"]
-    if self.get({"user":p_user}, {}) == None:
-      res = self.put({"user":p_user, "pwd":p_pwd})
-    else:
-      print("the user already exist")
 
 
 storeHelper = mongoHelper()
-storeHelper.addNewUser({"user":"hicham", "pwd":"hichampass"})
-print(storeHelper.get({"user":"hichami"}, {}))
+#storeHelper.addNewUser({"user":"hicham", "pwd":"hichampass"})
+#print(storeHelper.get({"user":"hichami"}, {}))
 
 
 @app.route("/", strict_slashes=False)
@@ -51,21 +31,20 @@ def route_home():
     return render_template('index.html')
 
 
-@app.route("/post", methods=['POST'])
+@app.route("/register", methods=['POST'])
 def route_hadle_post():
     print("post endpoint reached")
     if request.method == 'POST':
         print(f"------json data------{request.get_data()}")
         data = request.get_json()
         print(data)
-        print(data["input"])
+        #print(data["input"])
         print("------end------")
-    di = {"age": (2024 - int(data["input"]))}
+        storeHelper.addNewUser(data)
+    di = {"age": 35}
     m = json.dumps(di)
     print(f"sending m =## {m} ##")
     return jsonify(di)
 
-
 if __name__ == "__main__":
-  pass
-  #app.run(host="0.0.0.0",port=5000,debug=False)
+  app.run(host="0.0.0.0",port=5000,debug=False)
