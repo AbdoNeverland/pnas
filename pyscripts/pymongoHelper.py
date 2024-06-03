@@ -17,6 +17,7 @@ class mongoHelper:
   def __init__(self):
     self.mongoClient = MongoClient("mongodb://127.0.0.1:27017/")
     self.db = None
+    self.CodeExpiredTime = 600 # second
     self.createDatabase()
     self.createCollection()
 
@@ -43,48 +44,74 @@ class mongoHelper:
   def put(self, data, colName="Users"):
     res = self.db[colName].insert_one(data)
 
-  def addSMS(self, data):
+  def isValidUser(self, data):
+    user = self.get({"phone":data["phone"]}, {})
+    if  user["phone"]== data["phone"] and user["pwd"]== data["pwd"]:
+      return True
+    return False
+  def addSMS(self, data, noPwd = False):
     dt = datetime.datetime.now()
     msg =""
-    if self.get({"phone":data["phone"]}, {},colName="Users") == None:
-      return "you can't add a new sms without registering"
-    else:
-      if self.get({"phone":data["phone"]}, {},colName="Users")["activated"] == "no":
-        return "you phone is not yet activated to send sms"
-
-    if self.get({"phone":data["phone"]}, {},colName="Sms2Send") == None:
-      res = self.put({"email":data["email"],
+    user = self.get({"phone":data["phone"]}, {})
+    d2Add = {"email":data["email"],
         "pwd":data["pwd"],
         "phone":data["phone"],
-        "msg":data["phone"],
+        "msg":data["msg"],
         "sendTo":data["sendTo"],
         "datetime":dt.strftime("%m/%d/%Y,%H:%M:%S"),
         "timestamp":dt.timestamp(),
         "processed":"no",
         "received":"no"
-        },colName="Sms2Send")
-      msg ="the new smsService has been added"
+        }
+    if noPwd:
+      self.put(d2Add,colName="Sms2Send")
+      return "sms was added to stack"
     else:
-      msg = "the smsService already exists"
-    return msg
+      if  self.isValidUser(data):
+        if user["activated"] == "no":
+          return "your phone is not activated"
+        res = self.put(d2Add,colName="Sms2Send")
+        return "the new sms was added to stack"
+      else:
+        return "wrong user phone or password"
 
+  def sentVerificationCode(self, data, sdigit):
+    dt = datetime.datetime.now()
+    self.addSMS({"email":data["email"],
+      "pwd":data["pwd"],
+      "phone":data["phone"],
+      "msg":f"your pnas verification code is {sdigit}",
+      "sendTo":data["phone"],
+      "datetime":dt.strftime("%m/%d/%Y,%H:%M:%S"),
+      "timestamp":dt.timestamp(),
+      "processed":"no",
+      "received":"no"
+      }, noPwd= True);
   def addNewUser(self, data):
     dt = datetime.datetime.now()
     msg =""
     if self.get({"phone":data["phone"]}, {}) == None:
 
+      sdigit = getRandomDigits(6)
       res = self.put({"email":data["email"],
         "pwd":data["pwd"],
         "phone":data["phone"],
-        "digits":getRandomDigits(6),
+        "digits":sdigit,
         "activated":"no",
         "datetime":dt.strftime("%m/%d/%Y,%H:%M:%S"),
         "timestamp":dt.timestamp()
         })
-      addSMS();
+      self.sentVerificationCode(data, sdigit)
       msg ="the new user has been added"
     else:
-      msg = "the user already exists"
+      sdigit = getRandomDigits(6)
+      user = self.get({"phone":data["phone"]}, {})
+      if user["activated"] == "yes":
+        msg = "this phone number already exists"
+      else:
+        self.update({"phone":data["phone"]}, { "$set": { 'digits': sdigit, "timestamp":dt.timestamp() } })
+        self.sentVerificationCode(data, sdigit)
+        msg = "a verification code was sent again to this number"
     return msg
 
   def activate(self, data):
@@ -95,9 +122,15 @@ class mongoHelper:
     if savedUser == None:
       msg ="this account doesn't exists"
     else:
-      if savedUser["digits"] == data["smsdigits"]:
-        self.activatePhone(data["phone"])
-        msg = "this phone has been activated"
+      t1 = datetime.datetime.fromtimestamp(savedUser["timestamp"])
+      t2 = datetime.datetime.now()
+      expireTime = t2 - t1
+      if savedUser["digits"] == data["smsdigits"] :
+        if (expireTime.total_seconds()>self.CodeExpiredTime):
+          msg = "This verification code has expired"
+        else:
+          self.activatePhone(data["phone"])
+          msg = "this phone has been activated"
       else:
         msg = "wrong digits";
     return msg

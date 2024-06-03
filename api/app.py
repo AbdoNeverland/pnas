@@ -47,10 +47,14 @@ def route_handle_service():
 
 @app.route("/add-sms", methods=['POST'])
 def route_handle_addsms():
+    msg =""
     if request.method == 'POST':
         data = request.get_json()
-        di = {"msg": storeHelper.addSMS(data)}
-        return jsonify(di)
+      
+        msg =storeHelper.addSMS(data)
+
+    di = {"msg": msg}
+    return jsonify(di)
 
 @app.route("/activate", methods=['POST'])
 def route_handle_activate():

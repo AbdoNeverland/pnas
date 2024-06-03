@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pnas Service</title>
+    <style>
+        .container{
+    width: 100%;
+    height: 100px;
+    background-color: #fff;
+    border:black solid 2px ;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.button{
+    background-color: grey;
+    width: 200px;
+    height: 100px;
+    border-radius: 200px;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s;
+}
+.button::before{
+    position: absolute;
+    content: '';
+    background-color: #fff;
+    width: 90px;
+    height: 90px;
+    border-radius: 200px;
+    margin: 5px;
+    transition: 0.2s;
+}
+
+input:checked + .button{
+    background-color: green;
+}
+input:checked + .button::before{
+    transform: translateX(100px);
+}
+#check{
+    display: none;
+}
+body{
+    padding: 0px;
+    margin: 0px;
+}
+    </style>
+    <script type="text/javascript">
+ function postData(url = '', data = {}) {
+      fetch(url, {
+  method: "POST",
+  headers: {'Content-Type': 'application/json'}, 
+  body: JSON.stringify(data)
+}).then(response=>response.json())
+.then(bo=>{ 
+ alert(url+"\n"+bo["msg"]);
+  if (url=="/register")
+    $('#Validate_phone_number').modal('show');
+})
+}
+
+    function loopTime(event) {
+        let log = document.getElementById("log");
+        let check = document.getElementById("check");
+if (log.innerHTML.length>1000)
+    log.innerHTML="";
+        if (check.checked){
+        log.innerHTML += check.checked+" one</br>";
+    }
+        setTimeout(function() { loopTime() }, 1000);
+    }
+
+    window.addEventListener("load", loopTime);
+    </script>
+</head>
+
+<body>
+    <h1 style="margin: 0px;text-align: center;background-color: #5F9EA0;">Pnas service</h1>
+    <div style="display:flex;  align-items: center;justify-content: center;">
+        <input type="text" name="url" placeholder="Api url">
+        <input type="text" name="phone" placeholder="phone number">
+        <input type="password" name="pwd" placeholder="password">
+    </div>
+    <div class="container">
+        <input type="checkbox" id="check">
+        <label for="check" class="button"></label>
+    </div>
+    <div style="width:100%;border:black solid 1px" id="log">
+    </div>
+</body>
+
+</html>

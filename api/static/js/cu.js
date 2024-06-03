@@ -5,7 +5,11 @@
   body: JSON.stringify(data)
 }).then(response=>response.json())
 .then(bo=>{ 
- alert(bo["msg"]);
+ alert(url+"\n"+bo["msg"]);
+  if (url=="/register")
+    $('#Validate_phone_number').modal('show');
+
+
 })
 
 
@@ -23,7 +27,7 @@
     let pwd =  document.getElementById("Editbox1").value; 
     let phone =  document.getElementById("Editbox3").value; 
      postData('/register', {email: email,pwd:pwd,phone:phone });
-    $('#Validate_phone_number').modal('show');
+    
   }
 
   function activate(){
