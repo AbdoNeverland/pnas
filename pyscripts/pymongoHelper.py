@@ -2,6 +2,7 @@
 """doc """
 import json
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 import random
 import datetime
 import time
@@ -108,6 +109,7 @@ class mongoHelper:
       user = self.get({"phone":data["phone"]}, {})
       if user["activated"] == "yes":
         msg = "this phone number already exists"
+        msg=""
       else:
         self.update({"phone":data["phone"]}, { "$set": { 'digits': sdigit, "timestamp":dt.timestamp() } })
         self.sentVerificationCode(data, sdigit)
@@ -156,5 +158,23 @@ class mongoHelper:
     else:
       msg = "the smsService already exists"
     return msg
+
+  def getStack(self, data):
+    user = self.get({"phone":data["phone"]}, {})
+    if user == None:
+      return "this phone number is not registred"
+    if  self.isValidUser(data):
+        if user["activated"] == "no":
+          return "your phone is not activated"
+        allsms = self.db["Sms2Send"].find({"processed":"no"}, {"_id":1,"sendTo":1,"msg":1})
+        ar={"all":[]}
+        for os in allsms:
+          ms ={"sendTo":os["sendTo"], "msg":os["msg"],"id":str(os['_id'])}
+          ar["all"].append(ms)
+          #remove sms from stack
+          self.db["Sms2Send"].update_one({'_id': ObjectId(str(os['_id']))},  {'$set': {"processed": "yes"}})
+        return ar
+    else:
+      return "wrong phone number or password "
 
 

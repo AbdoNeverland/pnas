@@ -5,14 +5,11 @@
   body: JSON.stringify(data)
 }).then(response=>response.json())
 .then(bo=>{ 
- alert(url+"\n"+bo["msg"]);
-  if (url=="/register")
+  if (bo["msg"]!="")
+ alert(bo["msg"]);
+  if (url=="/register" && bo["msg"]!="")
     $('#Validate_phone_number').modal('show');
-
-
 })
-
-
 }
 
     function send(){

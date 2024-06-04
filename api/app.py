@@ -63,5 +63,13 @@ def route_handle_activate():
         di = {"msg": storeHelper.activate(data)}
         return jsonify(di)
 
+@app.route("/getStack", methods=['POST'])
+def route_handle_getStack():
+    if request.method == 'POST':
+        data = request.get_json()
+        return jsonify(storeHelper.getStack(data))
+    return "no GET"
+
+
 if __name__ == "__main__":
   app.run(host="0.0.0.0",port=5000,debug=False)
