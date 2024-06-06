@@ -12,40 +12,16 @@ PNAS is a web application designed to provide developers with a RESTful API for 
 
 To get started with PNAS, follow these steps:
 
-1. **Clone the Repository**: Clone this repository to your local machine.
+1. **Register**: go to pnas website, and create a new account (the website needs a valid phone number)
 
-```bash
-git clone https://github.com/yourusername/PNAS.git
-```
+2. **Activate your account**: once registed, a verification code will be sent to your phone, enter the digits to activate your account
 
-2. **Install Dependencies**: Navigate into the project directory and install the required dependencies.
+that's it, now you can use the pnas API
 
-```bash
-cd PNAS
-npm install
-```
-
-3. **Set Up Environment Variables**: Create a `.env` file in the root directory and add the following environment variables:
-
-```
-PORT=3000
-DATABASE_URL=your_database_url
-```
-
-4. **Run the Application**: Start the server locally.
-
-```bash
-npm start
-```
 
 ## API Documentation
-Sure! Here's a basic structure for your API documentation:
 
----
-
-# PNAS API Documentation
-
-Welcome to the documentation for the PNAS (Phone Number Authentication System) API. This document provides detailed information on how to use the API endpoints for phone number verification.
+This part provides detailed information on how to use the API endpoints for phone number verification.
 
 ## Base URL
 
