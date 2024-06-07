@@ -35,39 +35,27 @@ https://pnas-api.com
 
 Authentication is required for accessing most of the API endpoints. Developers need to sign up and obtain an API key to authenticate requests.
 
-### Authentication Header
+## Endpoints: sending messages
 
-Include the API key in the request headers as follows:
-
-```
-Authorization: Bearer YOUR_API_KEY
-```
-
-## Endpoints
-
-### 1. Verify Phone Number
-
-- **Endpoint**: `/verify`
+- **Endpoint**: `/add-sms`
 - **Method**: `POST`
-- **Description**: Verify the authenticity of a phone number.
+- **Description**: send message to a specific phone number
 - **Request Body**:
 
 ```json
-{
-  "phone": "1234567890"
-}
+{"email": "",
+        "pwd": "your password",
+        "phone": "your phone",
+        "msg": "hello from pnas",
+        "sendTo": "where to send message"
+        }
 ```
 
 - **Response**:
 
 ```json
 {
-  "success": true,
-  "message": "Phone number verified successfully",
-  "data": {
-    "phone": "1234567890",
-    "verified": true
-  }
+  "msg": "sms was added to stack"
 }
 ```
 
@@ -75,44 +63,10 @@ Authorization: Bearer YOUR_API_KEY
 
 ```json
 {
-  "success": false,
-  "message": "Invalid phone number format"
+  "msg": "wrong user phone or password"
 }
 ```
 
-### 2. Generate OTP (One-Time Password)
-
-- **Endpoint**: `/otp`
-- **Method**: `POST`
-- **Description**: Generate a one-time password (OTP) for phone number verification.
-- **Request Body**:
-
-```json
-{
-  "phone": "1234567890"
-}
-```
-
-- **Response**:
-
-```json
-{
-  "success": true,
-  "message": "OTP generated successfully",
-  "data": {
-    "otp": "123456"
-  }
-}
-```
-
-- **Error Response**:
-
-```json
-{
-  "success": false,
-  "message": "Invalid phone number format"
-}
-```
 
 ## Error Handling
 
@@ -120,15 +74,13 @@ In case of errors, the API will return appropriate HTTP status codes along with 
 
 ---
 
-Feel free to expand on this documentation with more details about each endpoint, including request parameters, response formats, and any additional features or considerations.
-
 ## Contributing
 
 We welcome contributions from the community! To contribute to PNAS, please follow these steps:
 
 1. Fork the repository.
 2. Create a new branch for your feature (`git checkout -b feature/your-feature-name`).
-3. Make your changes and commit them (`git commit -am 'Add some feature'`).
+3. Make your changes and commit them (`git commit -am 'new feature'`).
 4. Push to the branch (`git push origin feature/your-feature-name`).
 5. Create a new Pull Request.
 
@@ -137,9 +89,3 @@ We welcome contributions from the community! To contribute to PNAS, please follo
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-
-
-
-
-
-
