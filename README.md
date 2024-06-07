@@ -28,7 +28,7 @@ This part provides detailed information on how to use the API endpoints for phon
 The base URL for all API endpoints is:
 
 ```
-https://pnas-api.com
+https://.118.166.27
 ```
 
 ## Authentication
